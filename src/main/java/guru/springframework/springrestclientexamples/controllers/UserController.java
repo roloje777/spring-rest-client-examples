@@ -1,5 +1,6 @@
 package guru.springframework.springrestclientexamples.controllers;
 
+import guru.springframework.springrestclientexamples.numberwrapper.NumberWrapper;
 import guru.springframework.springrestclientexamples.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -24,9 +25,9 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public String displayUsers(@ModelAttribute Integer limit, Model model) {
+    public String displayUsers(@ModelAttribute NumberWrapper limit, Model model) {
         log.info("############ Received Limit: {}", limit);
-        model.addAttribute("users", userService.getUsers(limit));
+        model.addAttribute("users", userService.getUsers(limit.getLimit()));
         return "userlist";
     }
 

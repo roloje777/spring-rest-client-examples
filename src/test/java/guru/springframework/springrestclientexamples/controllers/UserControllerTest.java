@@ -52,7 +52,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void postEntity() {
+    public void testPostEntity() {
         webTestClient.post().uri(uriBuilder ->
                 uriBuilder
                         .path("/users")
