@@ -1,6 +1,5 @@
 package guru.springframework.springrestclientexamples.controllers;
 
-import guru.springframework.springrestclientexamples.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +57,7 @@ public class UserControllerTest {
                         .path("/users")
                         .queryParam("limit", 13)
                         .build())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.TEXT_HTML)
