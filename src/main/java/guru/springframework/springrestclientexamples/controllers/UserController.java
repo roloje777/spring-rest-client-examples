@@ -1,13 +1,12 @@
 package guru.springframework.springrestclientexamples.controllers;
 
-import guru.springframework.springrestclientexamples.numberwrapper.NumberWrapper;
 import guru.springframework.springrestclientexamples.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ServerWebExchange;
 
 @Slf4j
 @Controller
@@ -25,9 +24,10 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public String displayUsers(@ModelAttribute NumberWrapper limit, Model model) {
-        log.info("############ Received Limit: {}", limit);
-        model.addAttribute("users", userService.getUsers(limit.getLimit()));
+    public String displayUsers(Model model, ServerWebExchange serverWebExchange) {
+        model.addAttribute("users", userService.getUsers(serverWebExchange
+                    .getFormData()
+                    .map(data -> Integer.valueOf(data.getFirst("limit")))));
         return "userlist";
     }
 

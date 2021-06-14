@@ -5,9 +5,13 @@ import guru.springframework.springrestclientexamples.domain.UserData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,5 +40,17 @@ public class UserServiceImpl implements UserService {
         }
         return results.getResults();
 
+    }
+
+    @Override
+    public Flux<User> getUsers(Mono<Integer> limit) {
+        return WebClient.create(apiUrl)
+                .get()
+//                .uri(uriBuilder -> {return uriBuilder.queryParam("results",limit.block()).build();}) // Works also
+                .uri(uriBuilder -> uriBuilder.queryParam("limit", limit.block()).build())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange().flatMap(resp -> resp.bodyToMono(UserData.class))
+//                .flatMapIterable(userData -> userData.getResults()); // Works also
+                .flatMapIterable(UserData::getResults);
     }
 }
