@@ -47,7 +47,8 @@ public class UserServiceImpl implements UserService {
         return WebClient.create(apiUrl)
                 .get()
 //                .uri(uriBuilder -> {return uriBuilder.queryParam("results",limit.block()).build();}) // Works also
-                .uri(uriBuilder -> uriBuilder.queryParam("limit", limit.doOnNext(integer -> {})).build())
+//                .uri(uriBuilder -> uriBuilder.queryParam("limit", limit.doOnNext(integer -> {})).build())
+                .uri(uriBuilder -> uriBuilder.queryParam("results",limit.block()).build())
                 .accept(MediaType.TEXT_HTML)
                 .exchange().flatMap(resp -> resp.bodyToMono(UserData.class))
 //                .flatMapIterable(userData -> userData.getResults()); // Works also
