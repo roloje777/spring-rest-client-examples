@@ -27,7 +27,7 @@ public class UserController {
     public String displayUsers(Model model, ServerWebExchange serverWebExchange) {
         model.addAttribute("users", userService.getUsers(serverWebExchange
                     .getFormData()
-                    .map(data -> Integer.valueOf(data.getFirst("limit")))));
+                    .map(data -> Integer.valueOf(data.getFirst("results")))));
         return "userlist";
     }
 

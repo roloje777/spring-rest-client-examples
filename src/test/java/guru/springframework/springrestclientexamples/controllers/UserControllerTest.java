@@ -52,10 +52,8 @@ public class UserControllerTest {
 
     @Test
     public void testPostEntity() {
-        webTestClient.post().uri(uriBuilder ->
-                uriBuilder
-                        .path("/users")
-                        .queryParam("limit", 13)
+        webTestClient.post().uri(uriBuilder -> uriBuilder.path("/users")
+                        .queryParam("results", 13)
                         .build())
                 .contentType(MediaType.TEXT_HTML)
                 .exchange()

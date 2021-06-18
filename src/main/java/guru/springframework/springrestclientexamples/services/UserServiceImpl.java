@@ -48,8 +48,8 @@ public class UserServiceImpl implements UserService {
                 .get()
 //                .uri(uriBuilder -> {return uriBuilder.queryParam("results",limit.block()).build();}) // Works also
 //                .uri(uriBuilder -> uriBuilder.queryParam("limit", limit.doOnNext(integer -> {})).build())
-                .uri(uriBuilder -> uriBuilder.queryParam("results",limit.block()).build())
-                .accept(MediaType.TEXT_HTML)
+                .uri(uriBuilder -> uriBuilder.queryParam("results",limit.subscribe()).build())
+                .accept(MediaType.APPLICATION_JSON)
                 .exchange().flatMap(resp -> resp.bodyToMono(UserData.class))
 //                .flatMapIterable(userData -> userData.getResults()); // Works also
                 .flatMapIterable(UserData::getResults);
