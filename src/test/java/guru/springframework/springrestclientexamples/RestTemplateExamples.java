@@ -143,7 +143,7 @@ public class RestTemplateExamples {
         System.out.println(updatedNode.toString());
 
     }
-
+ //This test below gives me an expired certificate issue
     @Test
     public void updateProductUsingPatch() throws Exception {
 
