@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
@@ -44,14 +45,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Flux<User> getUsers(Mono<Integer> limit) {
-        return WebClient.create(apiUrl)
+          // build a Webclient
+//           return WebClient.create(apiUrl)
+//                .get()
+////                .uri(uriBuilder -> {return uriBuilder.queryParam("results",limit.block()).build();}) // Works also
+////                .uri(uriBuilder -> uriBuilder.queryParam("limit", limit.doOnNext(integer -> {})).build())
+//                .uri(uriBuilder -> uriBuilder.queryParam("results",limit.subscribe()).build())
+//                .accept(MediaType.APPLICATION_JSON)
+//                .exchange()
+//                .flatMap(resp -> resp.bodyToMono(UserData.class))
+////                .flatMapIterable(userData -> userData.getResults()); // Works also
+//                .flatMapIterable(UserData::getResults);
+        AtomicInteger ct = new AtomicInteger();
+        limit.subscribe(c-> ct.set(c));
+        int limitToDisplay= ct.get()  ;
+        Mono< UserData > userDataMono = WebClient.create(apiUrl)
                 .get()
-//                .uri(uriBuilder -> {return uriBuilder.queryParam("results",limit.block()).build();}) // Works also
-//                .uri(uriBuilder -> uriBuilder.queryParam("limit", limit.doOnNext(integer -> {})).build())
-                .uri(uriBuilder -> uriBuilder.queryParam("results",limit.subscribe()).build())
+
+                .uri(uriBuilder -> uriBuilder.queryParam("results", limitToDisplay).build())
+
                 .accept(MediaType.APPLICATION_JSON)
-                .exchange().flatMap(resp -> resp.bodyToMono(UserData.class))
-//                .flatMapIterable(userData -> userData.getResults()); // Works also
-                .flatMapIterable(UserData::getResults);
+                .exchange().
+                flatMap(resp -> resp.bodyToMono(UserData.class));
+
+
+        Flux<User> userFlux =  userDataMono.flatMapIterable(UserData::getResults);
+
+        return userFlux;
+
     }
 }
